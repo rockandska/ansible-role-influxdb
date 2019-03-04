@@ -1,0 +1,48 @@
+---
+- name: "[InfluxDB] Copy custom server configuration"
+  template:
+    src: "{{ influxdb_config_tpl }}"
+    dest: /etc/influxdb/influxdb.conf
+    mode: 0644
+  notify:
+    - restart influxdb
+  when:
+    - influxdb_config | length > 0
+
+- name: "[InfluxDB] Get default config file if influxdb_config is empty"
+  shell:
+    influxd config
+  register: influxdb_default_config
+  changed_when: false
+  when:
+    - influxdb_config | length == 0
+  tags:
+    - skip_ansible_lint
+
+- name: "[InfluxDB] Copy default config if influxdb_config is empty"
+  copy:
+    content: "{{ influxdb_default_config.stdout }}"
+    dest: /etc/influxdb/influxdb.conf
+  notify:
+    - restart influxdb
+  when:
+    - influxdb_config | length == 0
+
+- name: "Create minimal InfluxDB data directories"
+  file:
+    state: directory
+    path: "{{ item.path }}"
+    owner: influxdb
+    group: influxdb
+    mode: "{{ item.mode }}"
+  with_items:
+    - path: "{{ influxdb_config['[meta]']['dir'] | basename }}"
+      mode: "0755"
+    - path: "{{ influxdb_config['[meta]']['dir'] }}"
+      mode: "0755"
+    - path: "{{ influxdb_config['[data]']['dir'] }}"
+      mode: "0755"
+    - path: "{{ influxdb_config['[data]']['wal-dir'] }}"
+      mode: "0700"
+  when:
+    - influxdb_config | length > 0

@@ -1,0 +1,64 @@
+---
+###########
+# Install #
+###########
+influxdb_version: 1.7.4
+
+influxdb_rpm_url: "https://dl.influxdata.com/influxdb/releases/influxdb-{{ influxdb_version }}.x86_64.rpm"
+influxdb_rpm_sha256: "93caa49159e76b3338abc191c85d46d134ac67697a0c7f874c937baa38dd6a5e"
+influxdb_rpm_dest_path: "/usr/src"
+
+influxdb_deb_url: "https://dl.influxdata.com/influxdb/releases/influxdb_{{ influxdb_version }}_amd64.deb"
+influxdb_deb_sha256: "5488bd8889de7d45aa09cdccc845156e2d59442871ad6899d64d797e42f2888b"
+influxdb_deb_dest_path: "/usr/src"
+
+#################
+# Custom Config #
+#################
+influxdb_vars_files: []
+
+influxdb_config_tpl: etc/influxdb/influxdb.conf.j2
+influxdb_config: {}
+
+influxdb_systemd_override_tpl: etc/systemd/system/influxdb.service.d/override.conf.j2
+influxdb_systemd_override: {}
+
+influxdb_custom_logrotate_tpl: etc/logrotate.d/influxdb.j2
+influxdb_custom_logrotate:
+
+############
+# Api user #
+############
+influxdb_management_hostname:
+influxdb_management_port:
+influxdb_management_validate_certs:
+influxdb_management_proxies:
+influxdb_management_login_username:
+influxdb_management_login_password:
+influxdb_management_retries:
+influxdb_management_ssl:
+influxdb_management_timeout:
+influxdb_management_udp_port:
+influxdb_management_use_udp:
+
+#########
+# Users #
+#########
+influxdb_users_to_create: []
+influxdb_users_to_delete: []
+
+#############
+# Databases #
+#############
+influxdb_databases_to_create: []
+influxdb_databases_to_delete: []
+
+############
+# Policies #
+############
+influxdb_retention_policies_to_create: []
+
+#########
+# Debug #
+#########
+influxdb_hide_log: true

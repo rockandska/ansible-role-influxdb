@@ -1,0 +1,13 @@
+---
+- name: "Create management user by cli"
+  shell: >
+    influx --execute "CREATE USER {{ influxdb_management_login_username }}
+    WITH PASSWORD '{{ influxdb_management_login_password }}' WITH ALL PRIVILEGES"
+    && touch /etc/influxdb/admin_user_created
+  args:
+    creates: /etc/influxdb/admin_user_created
+  when:
+    - influxdb_management_login_username | d("") | trim | length > 0
+    - influxdb_management_login_username != None
+    - influxdb_management_login_password | d("") | trim | length > 0
+    - influxdb_management_login_password != None

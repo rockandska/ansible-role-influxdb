@@ -1,0 +1,51 @@
+---
+- hosts: all
+  remote_user: molecule
+  become: true
+  any_errors_fatal: true
+  roles:
+    - ansible-role-influxdb
+  vars:
+    influxdb_hide_log: false
+    influxdb_management_login_username: root
+    influxdb_management_login_password: root
+    influxdb_users_to_create:
+      - user_name: test
+        user_password: test
+        grants:
+          - database: db_test
+            privilege: READ
+          - database: db_test2
+            privilege: WRITE
+      - user_name: test3
+        user_password: test3
+        grants:
+          - database: db_test
+            privilege: ALL
+      - user_name: test2
+        user_password: test2
+        admin: true
+    influxdb_users_to_delete:
+      - user_not_exist
+    influxdb_databases_to_create:
+      - db_test
+      - db_test2
+    influxdb_databases_to_delete:
+      - db_not_exist
+    influxdb_retention_policies_to_create:
+      - database_name: db_test
+        policy_name: test
+        duration: 1h
+        replication: 1
+    influxdb_config:
+      reporting-disabled: true
+      "[meta]":
+        dir: /var/lib/influxdb-alternate/meta
+      "[data]":
+        dir: /var/lib/influxdb-alternate/data
+        wal-dir: /var/lib/influxdb-alternate/wal
+      "[http]":
+        auth-enabled: true
+      "[[graphite]]":
+        enable: true
+        batch-size: 5000

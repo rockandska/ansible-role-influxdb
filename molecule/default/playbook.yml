@@ -1,0 +1,9 @@
+---
+- hosts: all
+  remote_user: molecule
+  become: true
+  any_errors_fatal: true
+  roles:
+    - ansible-role-influxdb
+  vars:
+    influxdb_hide_log: false

@@ -1,0 +1,6 @@
+{% for section in influxdb_systemd_override %}
+[{{ section }}]
+{% for key,value in influxdb_systemd_override[section].items() %}
+{{ key }}={{ value }}
+{% endfor %}
+{% endfor %}

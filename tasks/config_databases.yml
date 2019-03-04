@@ -1,0 +1,38 @@
+---
+- name: "[InfluxDB] Create databases"
+  influxdb_database:
+    hostname: "{{ influxdb_management_hostname | default(omit, true) }}"
+    port: "{{ influxdb_management_port | default(omit, true) }}"
+    validate_certs: "{{ influxdb_management_validate_certs | default(omit, true) }}"
+    proxies: "{{ influxdb_management_proxies | default(omit, true) }}"
+    login_password: "{{ influxdb_management_login_password | default(omit, true) }}"
+    login_username: "{{ influxdb_management_login_username | default(omit, true) }}"
+    state: present
+    retries: "{{ influxdb_management_retries | default(omit, true) }}"
+    ssl: "{{ influxdb_management_ssl | default(omit, true) }}"
+    timeout: "{{ influxdb_management_timeout | default(omit, true) }}"
+    udp_port: "{{ influxdb_management_udp_port | default(omit, true) }}"
+    use_udp: "{{ influxdb_management_use_udp | default(omit, true) }}"
+    database_name: "{{ item }}"
+  no_log: "{{ influxdb_hide_log }}"
+  with_items:
+    - "{{ influxdb_databases_to_create }}"
+
+- name: "[InfluxDB] Delete unwanted databases"
+  influxdb_database:
+    hostname: "{{ influxdb_management_hostname | default(omit, true) }}"
+    port: "{{ influxdb_management_port | default(omit, true) }}"
+    validate_certs: "{{ influxdb_management_validate_certs | default(omit, true) }}"
+    proxies: "{{ influxdb_management_proxies | default(omit, true) }}"
+    login_password: "{{ influxdb_management_login_password | default(omit, true) }}"
+    login_username: "{{ influxdb_management_login_username | default(omit, true) }}"
+    state: absent
+    retries: "{{ influxdb_management_retries | default(omit, true) }}"
+    ssl: "{{ influxdb_management_ssl | default(omit, true) }}"
+    timeout: "{{ influxdb_management_timeout | default(omit, true) }}"
+    udp_port: "{{ influxdb_management_udp_port | default(omit, true) }}"
+    use_udp: "{{ influxdb_management_use_udp | default(omit, true) }}"
+    database_name: "{{ item }}"
+  no_log: "{{ influxdb_hide_log }}"
+  with_items:
+    - "{{ influxdb_databases_to_delete }}"

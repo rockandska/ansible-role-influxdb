@@ -1,0 +1,112 @@
+---
+
+- name: "[InfluxDB] Test variables type: string"
+  assert:
+    that:
+      - vars[item] is defined
+      - vars[item] is none
+        or vars[item] is string
+  with_items:
+    - influxdb_version
+    - influxdb_rpm_url
+    - influxdb_rpm_sha256
+    - influxdb_rpm_dest_path
+    - influxdb_deb_url
+    - influxdb_deb_sha256
+    - influxdb_deb_dest_path
+    - influxdb_systemd_override_tpl
+    - influxdb_custom_logrotate_tpl
+    - influxdb_custom_logrotate
+    - influxdb_management_hostname
+    - influxdb_management_port
+    - influxdb_management_validate_certs
+    - influxdb_management_proxies
+    - influxdb_management_login_password
+    - influxdb_management_login_username
+    - influxdb_management_retries
+    - influxdb_management_ssl
+    - influxdb_management_timeout
+    - influxdb_management_udp_port
+    - influxdb_management_use_udp
+
+- name: "[InfluxDB] Test variables type: list"
+  assert:
+    that:
+      - vars[item] is defined
+      - vars[item] is iterable
+  with_items:
+    - influxdb_vars_files
+    - influxdb_users_to_create
+    - influxdb_users_to_delete
+    - influxdb_retention_policies_to_create
+    - influxdb_databases_to_create
+    - influxdb_databases_to_delete
+
+- name: "[InfluxDB] Test variables type: dict"
+  assert:
+    that:
+      - vars[item] is defined
+      - vars[item] is mapping
+  with_items:
+    - influxdb_systemd_override
+    - influxdb_config
+
+- name: "[InfluxDB] Test variables type: boolean"
+  assert:
+    that:
+      - vars[item] is defined
+      - vars[item] is not string
+  with_items:
+    - influxdb_hide_log
+
+- name: "[InfluxDB] Test that there is as least one user to create if there is some to delete"
+  assert:
+    that:
+      - influxdb_users_to_create | length > 0
+  when:
+    - influxdb_users_to_delete | length > 0
+
+- name: "[InfluxDB] Test that the users to delete are not part of those to create"
+  assert:
+    that:
+      - (influxdb_users_to_create | map(attribute='user_name') | list)
+        | intersect(influxdb_users_to_delete) | list | length == 0
+  when:
+    - influxdb_users_to_delete | length > 0
+
+- name: "[InfluxDB] Test that the databases where to apply GRANTS are present in 'influxdb_databases_to_create'"
+  assert:
+    that:
+      - influxdb_databases_to_create | intersect([ item.database ]) | list | length == 1
+  with_items:
+    - "{{ influxdb_users_to_create | selectattr('grants','defined') | map(attribute='grants') | map('combine') | list }}"
+  when:
+    - influxdb_users_to_create | length > 0
+    - influxdb_users_to_create | selectattr('grants','defined') | list | length > 0
+
+- name: "[InfluxDB] Test that minimal section are set if influxdb_config is not empty"
+  assert:
+    that:
+      - vars.{{ item }} is defined
+  with_items:
+    - influxdb_config['[meta]']
+    - influxdb_config['[meta]']['dir']
+    - influxdb_config['[data]']
+    - influxdb_config['[data]']['dir']
+    - influxdb_config['[data]']['wal-dir']
+  when:
+    - influxdb_config | length > 0
+
+- name: "[InfluxDB] Test that management credentials are defined if authentication is enabled"
+  assert:
+    that:
+      - vars[item] is defined
+      - vars[item] is not none
+      - vars[item] | length > 0
+  with_items:
+    - influxdb_management_login_username
+    - influxdb_management_login_password
+  when:
+    - influxdb_config['[http]'] is defined
+    - influxdb_config['[http]']['auth-enabled'] is defined
+    - influxdb_config['[http]']['auth-enabled']

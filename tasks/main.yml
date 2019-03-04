@@ -1,0 +1,32 @@
+---
+- name: "[InfluxDB] Include user var files"
+  include_vars:
+    file: "{{ item }}"
+  with_items:
+    - "{{ influxdb_vars_files }}"
+  when:
+    - influxdb_vars_files | length > 0
+
+- import_tasks: pre_checks.yml
+
+- include_tasks: "{{ item }}"
+  with_first_found:
+    - "config_{{ ansible_os_family }}.yml"
+
+- import_tasks: config_logrotate.yml
+
+- import_tasks: config_systemd.yml
+
+- import_tasks: config_server.yml
+
+- meta: flush_handlers
+
+- import_tasks: check_influxdb_status.yml
+
+- import_tasks: config_management_user.yml
+
+- import_tasks: config_databases.yml
+
+- import_tasks: config_policies.yml
+
+- import_tasks: config_users.yml

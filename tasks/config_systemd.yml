@@ -1,0 +1,39 @@
+---
+
+- name: "[InfluxDB] Ensure that influxdb override systemd directory exists"
+  file:
+    path: /etc/systemd/system/influxdb.service.d
+    state: directory
+    mode: 0755
+    owner: root
+  when:
+    - influxdb_systemd_override | length > 0
+
+- name: "[InfluxDB] Remove override systemd config file if influxdb_systemd_override is empty"
+  file:
+    path: /etc/systemd/system/influxdb.service.d/override.conf
+    state: absent
+  notify:
+    - restart influxdb
+  when:
+    - influxdb_systemd_override | length == 0
+
+- name: "[InfluxDB] Copy override systemd file config if exists"
+  template:
+    src: "{{ influxdb_systemd_override_tpl }}"
+    dest: "/etc/systemd/system/influxdb.service.d/override.conf"
+    force: true
+    mode: 0644
+    owner: root
+  notify:
+    - restart influxdb
+  when:
+    - influxdb_systemd_override | length > 0
+
+- name: "[InfluxDB] Check that the override systemd file doesn't break the service"
+  shell: systemd-analyze verify influxdb.service
+  changed_when: false
+  when:
+    - influxdb_systemd_override | length > 0
+  tags:
+    - skip_ansible_lint

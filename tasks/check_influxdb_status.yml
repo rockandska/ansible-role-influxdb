@@ -1,0 +1,21 @@
+---
+- name: "[InfluxDB] Ensure influxdb is enabled"
+  service:
+    name: "influxdb"
+    enabled: "true"
+    state: "started"
+
+# Need to parse systemctl output to check the status due to :
+# https://github.com/systemd/systemd/pull/3874
+
+- name: "[InfluxDB] Register status of influxdb service"
+  shell: systemctl status influxdb
+  register: influxdb_service_status
+  changed_when: false
+  tags:
+    - skip_ansible_lint
+
+- name: "[InfluxDB] Failed if service is not running or is restarting"
+  fail:
+    msg: "The influxdb service is in failed state !"
+  when: influxdb_service_status.stdout is search("Active. failed")

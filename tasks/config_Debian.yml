@@ -1,0 +1,16 @@
+---
+- name: "[InfluxDB] Ensure that package destination path exists"
+  file:
+    path: "{{ influxdb_deb_dest_path }}"
+    state: directory
+
+- name: "[InfluxDB] Download Debian package"
+  get_url:
+    url: "{{ influxdb_deb_url }}"
+    dest: "{{ influxdb_deb_dest_path }}/{{ influxdb_deb_url | basename }}"
+    checksum: "sha256:{{ influxdb_deb_sha256 }}"
+
+- name: "[InfluxDB] Install the package downloaded"
+  apt:
+    deb: "{{ influxdb_deb_dest_path }}/{{ influxdb_deb_url | basename }}"
+    state: present

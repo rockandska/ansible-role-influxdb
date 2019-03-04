@@ -1,0 +1,16 @@
+---
+- name: "[InfluxDB] Ensure that package destination path exists"
+  file:
+    path: "{{ influxdb_deb_dest_path }}"
+    state: directory
+
+- name: "[InfluxDB] Download RPM package"
+  get_url:
+    url: "{{ influxdb_rpm_url }}"
+    dest: "{{ influxdb_rpm_dest_path }}/{{ influxdb_rpm_url | basename }}"
+    checksum: "sha256:{{ influxdb_rpm_sha256 }}"
+
+- name: "[InfluxDB] Install the package downloaded"
+  yum:
+    name: "{{ influxdb_rpm_dest_path }}/{{ influxdb_rpm_url | basename }}"
+    state: present

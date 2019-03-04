@@ -1,0 +1,29 @@
+#jinja2: trim_blocks: "true", lstrip_blocks: "false"
+# Global settings
+{% if influxdb_config != None and influxdb_config | d("") | length > 0 %}
+{% for key,value in influxdb_config | dictsort %}
+{% if value is not mapping %}
+{% if value is not string %}
+{{ key }} = {{ value | lower }}
+{% else %}
+{{ key }} = "{{ value }}"
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+# Section settings
+{% if influxdb_config != None and influxdb_config | d("") | length > 0 %}
+{% for key,value in influxdb_config | dictsort %}
+{% if value is mapping %}
+{{ key }}
+{% for k,v in value | dictsort %}
+  {% if v is not string %}
+  {{ k }} = {{ v | lower }}
+  {% else %}
+  {{ k }} = "{{ v }}"
+  {% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
