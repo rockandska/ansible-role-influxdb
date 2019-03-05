@@ -1,6 +1,6 @@
 ---
 - name: "[InfluxDB] Create users"
-  influxdb_user:
+  influxdb_user_custom:
     hostname: "{{ influxdb_management_hostname | default(omit, true) }}"
     port: "{{ influxdb_management_port | default(omit, true) }}"
     validate_certs: "{{ influxdb_management_validate_certs | default(omit, true) }}"
@@ -22,7 +22,7 @@
     - "{{ influxdb_users_to_create }}"
 
 - name: "[InfluxDB] Delete unwanted users"
-  influxdb_user:
+  influxdb_user_custom:
     hostname: "{{ influxdb_management_hostname | default(omit, true) }}"
     port: "{{ influxdb_management_port | default(omit, true) }}"
     validate_certs: "{{ influxdb_management_validate_certs | default(omit, true) }}"
