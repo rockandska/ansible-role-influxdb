@@ -4,6 +4,9 @@ ansible-role-influxdb
 Ansible role to install/configure InfluxDB from InfluxDB binaries.  
 Available on [Ansible Galaxy](https://galaxy.ansible.com/rockandska/influxdb)
 
+**Ansible Galaxy:**  
+![Galaxy Score](https://img.shields.io/ansible/quality/38392.svg)
+
 **Travis Build :**  
 [![Build Status](https://travis-ci.com/rockandska/ansible-role-influxdb.png?branch=master)](https://travis-ci.com/rockandska/ansible-role-influxdb) 
 
@@ -338,7 +341,7 @@ influxdb_hide_log: true
 
 
     - list of databases to delete
-
+    
     - examples:
 
   ```yaml
@@ -350,9 +353,9 @@ influxdb_hide_log: true
 
 
     - list of dict retention policies parameters
-
+    
     - **deletion of policies are not supported yet**
-
+    
     - examples:
 
   ```yaml
