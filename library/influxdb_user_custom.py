@@ -117,7 +117,7 @@ def find_user(module, client, user_name):
                 user_result = user
                 break
     except (ansible.module_utils.urls.ConnectionError, influx.exceptions.InfluxDBClientError) as e:
-        module.fail_json(msg=str(e))
+        module.fail_json(msg=to_native(e))
     return user_result
 
 
@@ -239,7 +239,7 @@ def main():
                     client.revoke_admin_privileges(user_name)
                     changed = True
             except influx.exceptions.InfluxDBClientError as e:
-                module.fail_json(msg=str(e))
+                module.fail_json(msg=to_native(e))
 
         else:
             user_password = user_password or ''
