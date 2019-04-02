@@ -1,6 +1,12 @@
 # Change Log
 
-## ['0.0.2'](https://github.com/rockandska/ansible-role-influxdb/tree/'0.0.2') (2019-03-06)
+## [**Next release**](https://github.com/rockandska/ansible-role-influxdb/tree/HEAD)
+
+**Merged pull requests:**
+
+- Fix pre\_check syntax [\#2](https://github.com/rockandska/ansible-role-influxdb/pull/2) ([rockandska](https://github.com/rockandska))
+
+## [0.0.2](https://github.com/rockandska/ansible-role-influxdb/tree/0.0.2) (2019-03-06)
 **Merged pull requests:**
 
 - Fix custom module name [\#1](https://github.com/rockandska/ansible-role-influxdb/pull/1) ([rockandska](https://github.com/rockandska))
