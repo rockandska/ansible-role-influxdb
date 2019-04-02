@@ -3,9 +3,9 @@
 - name: "[InfluxDB] Test variables type: string"
   assert:
     that:
-      - vars[item] is defined
-      - vars[item] is none
-        or vars[item] is string
+      - "{{ item }} is defined"
+      - "{{ item }} is none
+        or {{ item }} is string"
   with_items:
     - influxdb_version
     - influxdb_rpm_url
@@ -32,8 +32,8 @@
 - name: "[InfluxDB] Test variables type: list"
   assert:
     that:
-      - vars[item] is defined
-      - vars[item] is iterable
+      - "{{ item }} is defined"
+      - "{{ item }} is iterable"
   with_items:
     - influxdb_vars_files
     - influxdb_users_to_create
@@ -45,8 +45,8 @@
 - name: "[InfluxDB] Test variables type: dict"
   assert:
     that:
-      - vars[item] is defined
-      - vars[item] is mapping
+      - "{{ item }} is defined"
+      - "{{ item }} is mapping"
   with_items:
     - influxdb_systemd_override
     - influxdb_config
@@ -54,8 +54,8 @@
 - name: "[InfluxDB] Test variables type: boolean"
   assert:
     that:
-      - vars[item] is defined
-      - vars[item] is not string
+      - "{{ item }} is defined"
+      - "{{ item }} is not string"
   with_items:
     - influxdb_hide_log
 
@@ -77,7 +77,7 @@
 - name: "[InfluxDB] Test that the databases where to apply GRANTS are present in 'influxdb_databases_to_create'"
   assert:
     that:
-      - influxdb_databases_to_create | intersect([ item.database ]) | list | length == 1
+      - "{{ influxdb_databases_to_create | intersect([ item.database ]) | list | length == 1 }}"
   with_items:
     - "{{ influxdb_users_to_create | selectattr('grants','defined') | map(attribute='grants') | map('combine') | list }}"
   when:
@@ -87,7 +87,7 @@
 - name: "[InfluxDB] Test that minimal section are set if influxdb_config is not empty"
   assert:
     that:
-      - vars.{{ item }} is defined
+      - "{{ item }} is defined"
   with_items:
     - influxdb_config['[meta]']
     - influxdb_config['[meta]']['dir']
@@ -100,9 +100,9 @@
 - name: "[InfluxDB] Test that management credentials are defined if authentication is enabled"
   assert:
     that:
-      - vars[item] is defined
-      - vars[item] is not none
-      - vars[item] | length > 0
+      - "{{ item }} is defined"
+      - "{{ item }} is not none"
+      - "{{ item }} | length > 0"
   with_items:
     - influxdb_management_login_username
     - influxdb_management_login_password
