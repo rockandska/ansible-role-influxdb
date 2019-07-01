@@ -1,7 +1,12 @@
 ---
 - name: "Create management user by cli"
   shell: >
-    influx --execute "CREATE USER {{ influxdb_management_login_username }}
+    influx
+    {{ influxdb_management_hostname | ternary('-host ' + (influxdb_management_hostname | string),'') }}
+    {{ influxdb_management_port | ternary('-port ' + (influxdb_management_port | string), '' ) }}
+    {{ influxdb_management_ssl | ternary('-ssl ','') }}
+    {{ influxdb_management_validate_certs | ternary('', '-unsafeSsl ') }}
+    --execute "CREATE USER {{ influxdb_management_login_username }}
     WITH PASSWORD '{{ influxdb_management_login_password }}' WITH ALL PRIVILEGES"
     && touch /etc/influxdb/admin_user_created
   args:
